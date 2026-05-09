@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <future>
 #include <memory>
@@ -171,8 +172,10 @@ private:
   std::atomic<bool> operation_in_progress_{false};
 
   /* Internal state variables. */
-  bool    armed_ = false;
-  int16_t gear_ = UXVGear::GEAR_N;
+  std::atomic<bool>       armed_        = false;
+  int16_t                 gear_         = UXVGear::GEAR_N;
+  rclcpp::Clock           gear_clock_   = rclcpp::Clock(RCL_SYSTEM_TIME);
+  rclcpp::Time            gear_last_ts_ = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
 
   /* Node parameters. */
   int64_t              actions_arm_index_;
@@ -194,6 +197,7 @@ private:
   int64_t              enable_button_index_;
   bool                 enable_button_require_;
   std::string          frame_id_;
+  int64_t              gear_cooldown_;
   int64_t              gear_down_index_;
   int64_t              gear_up_index_;
   std::vector<int64_t> num_inputs_indexes_;

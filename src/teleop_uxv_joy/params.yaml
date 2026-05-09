@@ -188,6 +188,17 @@ params:
     read_only: false
     var_name: frame_id_
 
+  gear.cooldown:
+    type: integer
+    default_value: 1000
+    min_value: 1
+    max_value: 10000
+    step: 1
+    description: "Cooldown time for gear commands (debouncing) [ms]"
+    constraints: ""
+    read_only: false
+    var_name: gear_cooldown_
+
   gear.down.index:
     type: integer
     default_value: -1

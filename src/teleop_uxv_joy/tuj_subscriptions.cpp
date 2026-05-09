@@ -32,9 +32,14 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
     return;
   }
 
+  // Clean up previous executions
+  if (op_thread_.joinable()) {
+    op_thread_.join();
+  }
+
   // Check enable button
   if (enable_button_require_) {
-    if (static_cast<std::size_t>(enable_button_index_) < msg->buttons.size() &&
+    if (static_cast<std::size_t>(enable_button_index_) >= msg->buttons.size() ||
         msg->buttons[enable_button_index_] == BUTTON_RELEASED) {
       return;
     }
@@ -110,18 +115,24 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   if (axes_rh_reverse_) rh *= AXIS_REVERSE;
   if (axes_rv_reverse_) rv *= AXIS_REVERSE;
 
-  // Get gear down
-  if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
-      msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
-    gear_ = std::clamp(static_cast<int16_t>(gear_ - 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
-    RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
-  }
+  // Get gear commands with cooldown
+  rclcpp::Time now_ts = gear_clock_.now();
+  if (now_ts - gear_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(gear_cooldown_ * 1000000))) {
+    // Get gear down
+    if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
+        msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
+      gear_ = std::clamp(static_cast<int16_t>(gear_ - 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
+      gear_last_ts_ = gear_clock_.now();
+      RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
+    }
 
-  // Get gear up
-  if (gear_up_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_up_index_) < msg->buttons.size() &&
-      msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
-    gear_ = std::clamp(static_cast<int16_t>(gear_ + 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
-    RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
+    // Get gear up
+    if (gear_up_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_up_index_) < msg->buttons.size() &&
+        msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
+      gear_ = std::clamp(static_cast<int16_t>(gear_ + 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
+      gear_last_ts_ = gear_clock_.now();
+      RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
+    }
   }
 
   // Get numerical inputs
@@ -151,7 +162,7 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   cmd_uxv_msg.num_inputs.set__channels(num_inputs);
   cmd_uxv_msg.num_inputs.set__valid(num_inputs_valid);
   cmd_uxv_msg.op_mode.set__mode(UXVMode::UXV_MODE_OFFBOARD);
-  cmd_uxv_msg.set__arm(armed_);
+  cmd_uxv_msg.set__arm(armed_.load(std::memory_order_acquire));
   cmd_uxv_msg.set__reset(false);
   cmd_uxv_pub_->publish(cmd_uxv_msg);
 }
