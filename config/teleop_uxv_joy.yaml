@@ -22,15 +22,19 @@
     axes:
       lh:
         index: 0
+        reverse: false
         scale: 1.0
       lv:
         index: 1
+        reverse: false
         scale: 1.0
       rh:
         index: 2
+        reverse: false
         scale: 1.0
       rv:
         index: 3
+        reverse: false
         scale: 1.0
     dua:
       tf_server:

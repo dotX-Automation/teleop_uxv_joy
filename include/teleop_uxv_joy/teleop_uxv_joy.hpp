@@ -180,12 +180,16 @@ private:
   int64_t              actions_disarm_index_;
   std::string          actions_disarm_name_;
   int64_t              axes_lh_index_;
+  bool                 axes_lh_reverse_;
   double               axes_lh_scale_;
   int64_t              axes_lv_index_;
+  bool                 axes_lv_reverse_;
   double               axes_lv_scale_;
   int64_t              axes_rh_index_;
+  bool                 axes_rh_reverse_;
   double               axes_rh_scale_;
   int64_t              axes_rv_index_;
+  bool                 axes_rv_reverse_;
   double               axes_rv_scale_;
   int64_t              enable_button_index_;
   bool                 enable_button_require_;
@@ -200,6 +204,7 @@ private:
   bool                 wait_servers_;
 
   static constexpr float   AXIS_NEUTRAL    = 0.0f;
+  static constexpr float   AXIS_REVERSE    = -1.0f;
   static constexpr int     BUTTON_RELEASED = 0;
   static constexpr int     BUTTON_PRESSED  = 1;
   static constexpr int64_t INDEX_INVALID   = -1;

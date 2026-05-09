@@ -105,6 +105,10 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   lv *= static_cast<float>(axes_lv_scale_);
   rh *= static_cast<float>(axes_rh_scale_);
   rv *= static_cast<float>(axes_rv_scale_);
+  if (axes_lh_reverse_) lh *= AXIS_REVERSE;
+  if (axes_lv_reverse_) lv *= AXIS_REVERSE;
+  if (axes_rh_reverse_) rh *= AXIS_REVERSE;
+  if (axes_rv_reverse_) rv *= AXIS_REVERSE;
 
   // Get gear down
   if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&

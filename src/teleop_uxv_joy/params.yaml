@@ -52,6 +52,14 @@ params:
     read_only: false
     var_name: axes_lh_index_
 
+  axes.lh.reverse:
+    type: bool
+    default_value: false
+    description: "Left horizontal axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_lh_reverse_
+
   axes.lh.scale:
     type: double
     default_value: 1.0
@@ -73,6 +81,14 @@ params:
     constraints: "Must be a valid array index, or -1 to disable"
     read_only: false
     var_name: axes_lv_index_
+
+  axes.lv.reverse:
+    type: bool
+    default_value: false
+    description: "Left vertical axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_lv_reverse_
 
   axes.lv.scale:
     type: double
@@ -96,6 +112,14 @@ params:
     read_only: false
     var_name: axes_rh_index_
 
+  axes.rh.reverse:
+    type: bool
+    default_value: false
+    description: "Right horizontal axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_rh_reverse_
+
   axes.rh.scale:
     type: double
     default_value: 1.0
@@ -117,6 +141,14 @@ params:
     constraints: "Must be a valid array index, or -1 to disable"
     read_only: false
     var_name: axes_rv_index_
+
+  axes.rv.reverse:
+    type: bool
+    default_value: false
+    description: "Right vertical axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_rv_reverse_
 
   axes.rv.scale:
     type: double
