@@ -10,6 +10,11 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>joy</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
   <depend>dua_app_management</depend>
   <depend>dua_common_interfaces</depend>
   <depend>dua_hardware_interfaces</depend>

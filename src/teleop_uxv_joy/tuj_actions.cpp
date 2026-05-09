@@ -27,8 +27,6 @@ namespace teleop_uxv_joy
 
 void TeleopUXVJoy::handle_arm()
 {
-  std::lock_guard<std::mutex> op_lock(operation_lock_);
-
   armed_ = true; // No matter what the server will say, this also changes the internal state of this module
   RCLCPP_WARN(get_logger(), "ARM");
 
@@ -50,12 +48,12 @@ void TeleopUXVJoy::handle_arm()
       RCLCPP_ERROR(get_logger(), "Arm failure");
     }
   }
+
+  operation_in_progress_.store(false, std::memory_order_release);
 }
 
 void TeleopUXVJoy::handle_disarm()
 {
-  std::lock_guard<std::mutex> op_lock(operation_lock_);
-
   armed_ = false; // No matter what the server will say, this also changes the internal state of this module
   RCLCPP_WARN(get_logger(), "DISARM");
 
@@ -77,6 +75,8 @@ void TeleopUXVJoy::handle_disarm()
       RCLCPP_ERROR(get_logger(), "Disarm failure");
     }
   }
+
+  operation_in_progress_.store(false, std::memory_order_release);
 }
 
 } // namespace teleop_uxv_joy

@@ -185,7 +185,7 @@ params:
     max_value: 255
     step: 1
     description: "Array of indexes for the num_inputs in the Joy.buttons array, leave empty to disable"
-    constraints: "Must be an array of valid array indexes; num_inputs are treated as binaries"
+    constraints: "Must be an array of valid array indexes ordered as the desired num_inputs; set an entry out of bounds to skip the corresponding channel; num_inputs are treated as binaries"
     read_only: false
     var_name: num_inputs_indexes_
 

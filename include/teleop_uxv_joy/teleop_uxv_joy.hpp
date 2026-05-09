@@ -24,10 +24,10 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cstdint>
 #include <future>
 #include <memory>
-#include <mutex>
 #include <string>
 #include <thread>
 #include <tuple>
@@ -143,6 +143,9 @@ private:
   simple_actionclient::Client<Arm>::SharedPtr arm_client_;
   simple_actionclient::Client<Disarm>::SharedPtr disarm_client_;
 
+  /* Threads. */
+  std::thread op_thread_;
+
   /* Thread routines. */
   /**
    * @brief Handles an Arm operation.
@@ -150,7 +153,7 @@ private:
   void handle_arm();
 
   /**
-   * @brief Handes a Disarm operation.
+   * @brief Handles a Disarm operation.
    */
   void handle_disarm();
 
@@ -165,7 +168,7 @@ private:
   void handle_reset();
 
   /* Synchronization primitives. */
-  std::mutex operation_lock_;
+  std::atomic<bool> operation_in_progress_{false};
 
   /* Internal state variables. */
   bool    armed_ = false;
@@ -196,9 +199,10 @@ private:
   std::string          services_reset_name_;
   bool                 wait_servers_;
 
-  static constexpr int BUTTON_RELEASED = 0;
-  static constexpr int BUTTON_PRESSED  = 1;
-  static constexpr int INDEX_INVALID   = -1;
+  static constexpr float   AXIS_NEUTRAL    = 0.0f;
+  static constexpr int     BUTTON_RELEASED = 0;
+  static constexpr int     BUTTON_PRESSED  = 1;
+  static constexpr int64_t INDEX_INVALID   = -1;
 };
 
 } // namespace teleop_uxv_joy

@@ -74,7 +74,7 @@ ament_target_dependencies(teleop_uxv_joy
   std_srvs)
 rclcpp_components_register_nodes(teleop_uxv_joy "teleop_uxv_joy::TeleopUXVJoy")
 
-# teleop_uxv_joy standalone application
+# TeleopUXVJoy standalone application
 add_executable(teleop_uxv_joy_app
   src/teleop_uxv_joy_app.cpp)
 target_include_directories(teleop_uxv_joy_app PUBLIC
@@ -86,13 +86,13 @@ ament_target_dependencies(teleop_uxv_joy_app
   dua_app_management
   rclcpp)
 
-# Install Pose Solver component
+# Install TeleopUXVJoy component
 install(TARGETS teleop_uxv_joy
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 
-# Install Pose Solver app
+# Install TeleopUXVJoy app
 install(TARGETS teleop_uxv_joy_app
   DESTINATION lib/${PROJECT_NAME})
 

@@ -34,7 +34,12 @@ TeleopUXVJoy::TeleopUXVJoy(const rclcpp::NodeOptions & node_options)
 }
 
 TeleopUXVJoy::~TeleopUXVJoy()
-{}
+{
+  // Wait for pending operations to complete
+  if (op_thread_.joinable()) {
+    op_thread_.join();
+  }
+}
 
 void TeleopUXVJoy::init_cgroups()
 {

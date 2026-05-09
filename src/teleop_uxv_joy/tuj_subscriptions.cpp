@@ -28,80 +28,94 @@ namespace teleop_uxv_joy
 void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
 {
   // Check if an operation is in progress
-  std::unique_lock<std::mutex> op_lock(operation_lock_, std::try_to_lock);
-  if (!op_lock.owns_lock()) {
+  if (operation_in_progress_.load(std::memory_order_acquire)) {
     return;
   }
 
   // Check enable button
   if (enable_button_require_) {
-    if (msg->buttons[enable_button_index_] == BUTTON_RELEASED) {
+    if (static_cast<std::size_t>(enable_button_index_) < msg->buttons.size() &&
+        msg->buttons[enable_button_index_] == BUTTON_RELEASED) {
       return;
     }
   }
 
   // Check for kill service
   if (!services_kill_name_.empty()) {
-    if (msg->buttons[services_kill_index_] == BUTTON_PRESSED) {
-      std::thread(
+    if (static_cast<std::size_t>(services_kill_index_) < msg->buttons.size() &&
+        msg->buttons[services_kill_index_] == BUTTON_PRESSED) {
+      operation_in_progress_.store(true, std::memory_order_release);
+      op_thread_ = std::thread(
         std::bind(
           &TeleopUXVJoy::handle_kill,
-          this)).detach();
+          this));
       return;
     }
   }
 
   // Check for reset service
   if (!services_reset_name_.empty()) {
-    if (msg->buttons[services_reset_index_] == BUTTON_PRESSED) {
-      std::thread(
+    if (static_cast<std::size_t>(services_reset_index_) < msg->buttons.size() &&
+        msg->buttons[services_reset_index_] == BUTTON_PRESSED) {
+      operation_in_progress_.store(true, std::memory_order_release);
+      op_thread_ = std::thread(
         std::bind(
           &TeleopUXVJoy::handle_reset,
-          this)).detach();
+          this));
       return;
     }
   }
 
   // Check for arm action
   if (!actions_arm_name_.empty()) {
-    if (msg->buttons[actions_arm_index_] == BUTTON_PRESSED) {
-      std::thread(
+    if (static_cast<std::size_t>(actions_arm_index_) < msg->buttons.size() &&
+        msg->buttons[actions_arm_index_] == BUTTON_PRESSED) {
+      operation_in_progress_.store(true, std::memory_order_release);
+      op_thread_ = std::thread(
         std::bind(
           &TeleopUXVJoy::handle_arm,
-          this)).detach();
+          this));
       return;
     }
   }
 
   // Check for disarm action
   if (!actions_disarm_name_.empty()) {
-    if (msg->buttons[actions_disarm_index_] == BUTTON_PRESSED) {
-      std::thread(
+    if (static_cast<std::size_t>(actions_disarm_index_) < msg->buttons.size() &&
+        msg->buttons[actions_disarm_index_] == BUTTON_PRESSED) {
+      operation_in_progress_.store(true, std::memory_order_release);
+      op_thread_ = std::thread(
         std::bind(
           &TeleopUXVJoy::handle_disarm,
-          this)).detach();
+          this));
       return;
     }
   }
 
   // Get axes
-  float lh = axes_lh_index_ != INDEX_INVALID ? msg->axes[axes_lh_index_] : 0.0f;
-  float lv = axes_lv_index_ != INDEX_INVALID ? msg->axes[axes_lv_index_] : 0.0f;
-  float rh = axes_rh_index_ != INDEX_INVALID ? msg->axes[axes_rh_index_] : 0.0f;
-  float rv = axes_rv_index_ != INDEX_INVALID ? msg->axes[axes_rv_index_] : 0.0f;
+  float lh = axes_lh_index_ != INDEX_INVALID && static_cast<std::size_t>(axes_lh_index_) < msg->axes.size() ?
+             msg->axes[axes_lh_index_] : AXIS_NEUTRAL;
+  float lv = axes_lv_index_ != INDEX_INVALID && static_cast<std::size_t>(axes_lv_index_) < msg->axes.size() ?
+             msg->axes[axes_lv_index_] : AXIS_NEUTRAL;
+  float rh = axes_rh_index_ != INDEX_INVALID && static_cast<std::size_t>(axes_rh_index_) < msg->axes.size() ?
+             msg->axes[axes_rh_index_] : AXIS_NEUTRAL;
+  float rv = axes_rv_index_ != INDEX_INVALID && static_cast<std::size_t>(axes_rv_index_) < msg->axes.size() ?
+             msg->axes[axes_rv_index_] : AXIS_NEUTRAL;
   lh *= static_cast<float>(axes_lh_scale_);
   lv *= static_cast<float>(axes_lv_scale_);
   rh *= static_cast<float>(axes_rh_scale_);
   rv *= static_cast<float>(axes_rv_scale_);
 
   // Get gear down
-  if (gear_down_index_ != INDEX_INVALID && msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
+  if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
+      msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
     gear_ = std::clamp(static_cast<int16_t>(gear_ - 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
     RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
   }
 
   // Get gear up
-  if (gear_up_index_ != INDEX_INVALID && msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
+  if (gear_up_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_up_index_) < msg->buttons.size() &&
+      msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
     gear_ = std::clamp(static_cast<int16_t>(gear_ + 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
     RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
   }
@@ -111,7 +125,11 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   std::array<int16_t, UXVNumChannels::N_CHANNELS> num_inputs;
   num_inputs_valid.fill(false);
   num_inputs.fill(UXVNumChannels::CHAN_OFF);
-  for (std::size_t i = 0; i < num_inputs_indexes_.size(); i++) {
+  for (std::size_t i = 0; i < std::min(num_inputs_indexes_.size(), static_cast<std::size_t>(UXVNumChannels::N_CHANNELS)); i++) {
+    if (static_cast<std::size_t>(num_inputs_indexes_[i]) >= msg->buttons.size()) {
+      continue;
+    }
+
     num_inputs_valid[i] = true;
     num_inputs[i] = msg->buttons[num_inputs_indexes_[i]] == BUTTON_PRESSED ?
                     UXVNumChannels::CHAN_ON : UXVNumChannels::CHAN_OFF;

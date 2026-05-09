@@ -27,8 +27,6 @@ namespace teleop_uxv_joy
 
 void TeleopUXVJoy::handle_kill()
 {
-  std::lock_guard<std::mutex> op_lock(operation_lock_);
-
   RCLCPP_WARN(get_logger(), "KILL");
 
   // Try to kill-switch the UXV
@@ -43,12 +41,12 @@ void TeleopUXVJoy::handle_kill()
       RCLCPP_INFO(get_logger(), "Kill success");
     }
   }
+
+  operation_in_progress_.store(false, std::memory_order_release);
 }
 
 void TeleopUXVJoy::handle_reset()
 {
-  std::lock_guard<std::mutex> op_lock(operation_lock_);
-
   RCLCPP_WARN(get_logger(), "RESET");
 
   // Try to reset the UXV
@@ -63,6 +61,8 @@ void TeleopUXVJoy::handle_reset()
       RCLCPP_INFO(get_logger(), "Reset success");
     }
   }
+
+  operation_in_progress_.store(false, std::memory_order_release);
 }
 
 } // namespace teleop_uxv_joy
