@@ -26,6 +26,7 @@
 #include <array>
 #include <atomic>
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 #include <future>
 #include <memory>
@@ -182,15 +183,19 @@ private:
   std::string          actions_arm_name_;
   int64_t              actions_disarm_index_;
   std::string          actions_disarm_name_;
+  double               axes_lh_deadzone_;
   int64_t              axes_lh_index_;
   bool                 axes_lh_reverse_;
   double               axes_lh_scale_;
+  double               axes_lv_deadzone_;
   int64_t              axes_lv_index_;
   bool                 axes_lv_reverse_;
   double               axes_lv_scale_;
+  double               axes_rh_deadzone_;
   int64_t              axes_rh_index_;
   bool                 axes_rh_reverse_;
   double               axes_rh_scale_;
+  double               axes_rv_deadzone_;
   int64_t              axes_rv_index_;
   bool                 axes_rv_reverse_;
   double               axes_rv_scale_;
@@ -206,6 +211,15 @@ private:
   int64_t              services_reset_index_;
   std::string          services_reset_name_;
   bool                 wait_servers_;
+
+  /* Utilities. */
+  /**
+   * @brief Returns the string representation of a gear selection.
+   *
+   * @param gear Gear selection.
+   * @return Gear string representation.
+   */
+  std::string get_gear_str(const int16_t & gear);
 
   static constexpr float   AXIS_NEUTRAL    = 0.0f;
   static constexpr float   AXIS_REVERSE    = -1.0f;

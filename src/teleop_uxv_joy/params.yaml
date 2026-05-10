@@ -41,6 +41,17 @@ params:
     read_only: true
     var_name: actions_disarm_name_
 
+  axes.lh.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Left horizontal axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lh_deadzone_
+
   axes.lh.index:
     type: integer
     default_value: -1
@@ -70,6 +81,17 @@ params:
     constraints: ""
     read_only: false
     var_name: axes_lh_scale_
+
+  axes.lv.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Left vertical axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lv_deadzone_
 
   axes.lv.index:
     type: integer
@@ -101,6 +123,17 @@ params:
     read_only: false
     var_name: axes_lv_scale_
 
+  axes.rh.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Right horizontal axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rh_deadzone_
+
   axes.rh.index:
     type: integer
     default_value: -1
@@ -130,6 +163,17 @@ params:
     constraints: ""
     read_only: false
     var_name: axes_rh_scale_
+
+  axes.rv.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Right vertical axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rv_deadzone_
 
   axes.rv.index:
     type: integer

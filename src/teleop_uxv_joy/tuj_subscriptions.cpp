@@ -106,6 +106,10 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
              msg->axes[axes_rh_index_] : AXIS_NEUTRAL;
   float rv = axes_rv_index_ != INDEX_INVALID && static_cast<std::size_t>(axes_rv_index_) < msg->axes.size() ?
              msg->axes[axes_rv_index_] : AXIS_NEUTRAL;
+  if (std::fabs(lh) < static_cast<float>(axes_lh_deadzone_)) lh = AXIS_NEUTRAL;
+  if (std::fabs(lv) < static_cast<float>(axes_lv_deadzone_)) lv = AXIS_NEUTRAL;
+  if (std::fabs(rh) < static_cast<float>(axes_rh_deadzone_)) rh = AXIS_NEUTRAL;
+  if (std::fabs(rv) < static_cast<float>(axes_rv_deadzone_)) rv = AXIS_NEUTRAL;
   lh *= static_cast<float>(axes_lh_scale_);
   lv *= static_cast<float>(axes_lv_scale_);
   rh *= static_cast<float>(axes_rh_scale_);
@@ -123,7 +127,7 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
         msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
       gear_ = std::clamp(static_cast<int16_t>(gear_ - 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
       gear_last_ts_ = gear_clock_.now();
-      RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
+      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
     }
 
     // Get gear up
@@ -131,7 +135,7 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
         msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
       gear_ = std::clamp(static_cast<int16_t>(gear_ + 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
       gear_last_ts_ = gear_clock_.now();
-      RCLCPP_WARN(get_logger(), "GEAR %hd", gear_);
+      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
     }
   }
 

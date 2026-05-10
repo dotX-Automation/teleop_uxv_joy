@@ -70,10 +70,10 @@ def generate_launch_description():
                 parameters=[
                     {
                         'device_id': 0,
-                        'deadzone': 0.1,
+                        'deadzone': 0.0,
                         'autorepeat_rate': 20.0,
                         'sticky_buttons': False,
-                        'coalesce_interval_ms': 1
+                        'coalesce_interval_ms': 25
                     }
                 ],
                 remappings=[
