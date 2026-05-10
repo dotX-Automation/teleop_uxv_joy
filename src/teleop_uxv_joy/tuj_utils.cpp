@@ -33,7 +33,10 @@ std::string TeleopUXVJoy::get_gear_str(const int16_t & gear)
     case UXVGear::GEAR_N:
       return "N";
     case UXVGear::GEAR_D:
-      return "D";
+      {
+        if (gear_automatic_) return "D";
+        return std::to_string(gear);
+      }
     case UXVGear::GEAR_INVALID:
       return "INVALID";
     default:

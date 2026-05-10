@@ -202,6 +202,7 @@ private:
   int64_t              enable_button_index_;
   bool                 enable_button_require_;
   std::string          frame_id_;
+  bool                 gear_automatic_;
   int64_t              gear_cooldown_;
   int64_t              gear_down_index_;
   int64_t              gear_up_index_;

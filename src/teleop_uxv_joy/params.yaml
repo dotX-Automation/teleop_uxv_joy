@@ -232,6 +232,14 @@ params:
     read_only: false
     var_name: frame_id_
 
+  gear.automatic:
+    type: bool
+    default_value: false
+    description: "Enables automatic gear, limiting the range to (R, N, D)"
+    constraints: ""
+    read_only: false
+    var_name: gear_automatic_
+
   gear.cooldown:
     type: integer
     default_value: 1000
@@ -250,7 +258,7 @@ params:
     max_value: 255
     step: 1
     description: "Index of the gear down button in the Joy.buttons array, set to -1 to disable"
-    constraints: "Must be a valid array index; only gears in the range (R, N, D) are supported"
+    constraints: "Must be a valid array index"
     read_only: false
     var_name: gear_down_index_
 
@@ -261,7 +269,7 @@ params:
     max_value: 255
     step: 1
     description: "Index of the gear up button in the Joy.buttons array, set to -1 to disable"
-    constraints: "Must be a valid array index; only gears in the range (R, N, D) are supported"
+    constraints: "Must be a valid array index"
     read_only: false
     var_name: gear_up_index_
 

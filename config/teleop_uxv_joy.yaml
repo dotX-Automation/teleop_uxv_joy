@@ -50,6 +50,7 @@
       require: true
     frame_id: joy
     gear:
+      automatic: false
       cooldown: 1000
       down:
         index: 12

@@ -37,6 +37,34 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
     op_thread_.join();
   }
 
+  // Get gear commands with cooldown
+  rclcpp::Time now_ts = gear_clock_.now();
+  if (now_ts - gear_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(gear_cooldown_ * 1000000))) {
+    // Get gear down
+    if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
+        msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
+      if (gear_automatic_) {
+        gear_ = std::clamp(static_cast<int16_t>(gear_ - 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
+      } else {
+        gear_ -= 1;
+      }
+      gear_last_ts_ = gear_clock_.now();
+      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+    }
+
+    // Get gear up
+    if (gear_up_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_up_index_) < msg->buttons.size() &&
+        msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
+      if (gear_automatic_) {
+        gear_ = std::clamp(static_cast<int16_t>(gear_ + 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
+      } else {
+        gear_ += 1;
+      }
+      gear_last_ts_ = gear_clock_.now();
+      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+    }
+  }
+
   // Check enable button
   if (enable_button_require_) {
     if (static_cast<std::size_t>(enable_button_index_) >= msg->buttons.size() ||
@@ -118,26 +146,6 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   if (axes_lv_reverse_) lv *= AXIS_REVERSE;
   if (axes_rh_reverse_) rh *= AXIS_REVERSE;
   if (axes_rv_reverse_) rv *= AXIS_REVERSE;
-
-  // Get gear commands with cooldown
-  rclcpp::Time now_ts = gear_clock_.now();
-  if (now_ts - gear_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(gear_cooldown_ * 1000000))) {
-    // Get gear down
-    if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
-        msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
-      gear_ = std::clamp(static_cast<int16_t>(gear_ - 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
-      gear_last_ts_ = gear_clock_.now();
-      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
-    }
-
-    // Get gear up
-    if (gear_up_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_up_index_) < msg->buttons.size() &&
-        msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
-      gear_ = std::clamp(static_cast<int16_t>(gear_ + 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
-      gear_last_ts_ = gear_clock_.now();
-      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
-    }
-  }
 
   // Get numerical inputs
   std::array<bool, UXVNumChannels::N_CHANNELS> num_inputs_valid;
