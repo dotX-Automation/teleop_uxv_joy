@@ -1,0 +1,331 @@
+header_include_path: teleop_uxv_joy/teleop_uxv_joy.hpp
+namespace: teleop_uxv_joy
+node_class_name: TeleopUXVJoy
+
+params:
+  actions.arm.index:
+    type: integer
+    default_value: 0
+    min_value: 0
+    max_value: 255
+    step: 1
+    description: "Index of the Arm action button in the Joy.buttons array"
+    constraints: "Must be a valid array index"
+    read_only: false
+    var_name: actions_arm_index_
+
+  actions.arm.name:
+    type: string
+    default_value: ""
+    description: "Arm action name, set to empty string to disable"
+    constraints: ""
+    read_only: true
+    var_name: actions_arm_name_
+
+  actions.disarm.index:
+    type: integer
+    default_value: 0
+    min_value: 0
+    max_value: 255
+    step: 1
+    description: "Index of the Disarm action button in the Joy.buttons array"
+    constraints: "Must be a valid array index"
+    read_only: false
+    var_name: actions_disarm_index_
+
+  actions.disarm.name:
+    type: string
+    default_value: ""
+    description: "Disarm action name, set to empty string to disable"
+    constraints: ""
+    read_only: true
+    var_name: actions_disarm_name_
+
+  axes.lh.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Left horizontal axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lh_deadzone_
+
+  axes.lh.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the left horizontal axis in the Joy.axes array"
+    constraints: "Must be a valid array index, or -1 to disable"
+    read_only: false
+    var_name: axes_lh_index_
+
+  axes.lh.reverse:
+    type: bool
+    default_value: false
+    description: "Left horizontal axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_lh_reverse_
+
+  axes.lh.scale:
+    type: double
+    default_value: 1.0
+    min_value: 0.0
+    max_value: 1000000.0
+    step: 0.0
+    description: "Scale factor for the left horizontal axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lh_scale_
+
+  axes.lv.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Left vertical axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lv_deadzone_
+
+  axes.lv.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the left vertical axis in the Joy.axes array"
+    constraints: "Must be a valid array index, or -1 to disable"
+    read_only: false
+    var_name: axes_lv_index_
+
+  axes.lv.reverse:
+    type: bool
+    default_value: false
+    description: "Left vertical axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_lv_reverse_
+
+  axes.lv.scale:
+    type: double
+    default_value: 1.0
+    min_value: 0.0
+    max_value: 1000000.0
+    step: 0.0
+    description: "Scale factor for the left vertical axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lv_scale_
+
+  axes.rh.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Right horizontal axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rh_deadzone_
+
+  axes.rh.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the right horizontal axis in the Joy.axes array"
+    constraints: "Must be a valid array index, or -1 to disable"
+    read_only: false
+    var_name: axes_rh_index_
+
+  axes.rh.reverse:
+    type: bool
+    default_value: false
+    description: "Right horizontal axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_rh_reverse_
+
+  axes.rh.scale:
+    type: double
+    default_value: 1.0
+    min_value: 0.0
+    max_value: 1000000.0
+    step: 0.0
+    description: "Scale factor for the right horizontal axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rh_scale_
+
+  axes.rv.deadzone:
+    type: double
+    default_value: 0.0
+    min_value: 0.0
+    max_value: 1.0
+    step: 0.0
+    description: "Right vertical axis deadzone: absolute value of the input must be higher to be registered as non-neutral axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rv_deadzone_
+
+  axes.rv.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the right vertical axis in the Joy.axes array"
+    constraints: "Must be a valid array index, or -1 to disable"
+    read_only: false
+    var_name: axes_rv_index_
+
+  axes.rv.reverse:
+    type: bool
+    default_value: false
+    description: "Right vertical axis reverse flag"
+    constraints: ""
+    read_only: false
+    var_name: axes_rv_reverse_
+
+  axes.rv.scale:
+    type: double
+    default_value: 1.0
+    min_value: 0.0
+    max_value: 1000000.0
+    step: 0.0
+    description: "Scale factor for the right vertical axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rv_scale_
+
+  enable_button.index:
+    type: integer
+    default_value: 0
+    min_value: 0
+    max_value: 255
+    step: 1
+    description: "Index of the enable button in the Joy.buttons array"
+    constraints: "Must be a valid array index"
+    read_only: false
+    var_name: enable_button_index_
+
+  enable_button.require:
+    type: bool
+    default_value: false
+    description: "Whether to require the enable button to be pressed to send commands"
+    constraints: ""
+    read_only: false
+    var_name: enable_button_require_
+
+  frame_id:
+    type: string
+    default_value: "joy"
+    description: "Frame ID to write in UXVCommand.header.frame_id field"
+    constraints: ""
+    read_only: false
+    var_name: frame_id_
+
+  gear.automatic:
+    type: bool
+    default_value: false
+    description: "Enables automatic gear, limiting the range to (R, N, D)"
+    constraints: ""
+    read_only: false
+    var_name: gear_automatic_
+
+  gear.cooldown:
+    type: integer
+    default_value: 1000
+    min_value: 1
+    max_value: 10000
+    step: 1
+    description: "Cooldown time for gear commands (debouncing) [ms]"
+    constraints: ""
+    read_only: false
+    var_name: gear_cooldown_
+
+  gear.down.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the gear down button in the Joy.buttons array, set to -1 to disable"
+    constraints: "Must be a valid array index"
+    read_only: false
+    var_name: gear_down_index_
+
+  gear.up.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the gear up button in the Joy.buttons array, set to -1 to disable"
+    constraints: "Must be a valid array index"
+    read_only: false
+    var_name: gear_up_index_
+
+  num_inputs.indexes:
+    type: integer_array
+    default_value: []
+    min_value: 0
+    max_value: 255
+    step: 1
+    description: "Array of indexes for the num_inputs in the Joy.buttons array, leave empty to disable"
+    constraints: "Must be an array of valid array indexes ordered as the desired num_inputs; set an entry out of bounds to skip the corresponding channel; num_inputs are treated as binaries"
+    read_only: false
+    var_name: num_inputs_indexes_
+
+  services.kill.index:
+    type: integer
+    default_value: 0
+    min_value: 0
+    max_value: 255
+    step: 1
+    description: "Index of the kill-switch service button in the Joy.buttons array"
+    constraints: "Must be a valid array index"
+    read_only: false
+    var_name: services_kill_index_
+
+  services.kill.name:
+    type: string
+    default_value: ""
+    description: "Kill-switch service name, set to empty string to disable"
+    constraints: ""
+    read_only: true
+    var_name: services_kill_name_
+
+  services.reset.index:
+    type: integer
+    default_value: 0
+    min_value: 0
+    max_value: 255
+    step: 1
+    description: "Index of the reset service button in the Joy.buttons array"
+    constraints: "Must be a valid array index"
+    read_only: false
+    var_name: services_reset_index_
+
+  services.reset.name:
+    type: string
+    default_value: ""
+    description: "UxV reset service name, set to empty string to disable"
+    constraints: ""
+    read_only: true
+    var_name: services_reset_name_
+
+  wait_servers:
+    type: bool
+    default_value: false
+    description: "Waits for action and service servers on startup"
+    constraints: ""
+    read_only: true
+    var_name: wait_servers_

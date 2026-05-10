@@ -1,0 +1,69 @@
+# Sample configuration for DS4 joypad:
+# - enable: R1
+# - arm: cross
+# - disarm: triangle
+# - kill: circle
+# - reset: square
+# - gear down: dpad down
+# - gear up: dpad up
+# - num_inputs[0]: PS button
+# - num_inputs[1]: L1
+# - num_inputs[2]: dpad right
+
+/teleop_uxv_joy:
+  ros__parameters:
+    actions:
+      arm:
+        index: 0
+        name: '/arm'
+      disarm:
+        index: 3
+        name: '/disarm'
+    axes:
+      lh:
+        deadzone: 0.1
+        index: 0
+        reverse: false
+        scale: 1.0
+      lv:
+        deadzone: 0.1
+        index: 1
+        reverse: false
+        scale: 1.0
+      rh:
+        deadzone: 0.1
+        index: 2
+        reverse: false
+        scale: 1.0
+      rv:
+        deadzone: 0.1
+        index: 3
+        reverse: false
+        scale: 1.0
+    dua:
+      tf_server:
+        get_transform: false
+        transform_pose: false
+        wait_servers: false
+    enable_button:
+      index: 10
+      require: true
+    frame_id: joy
+    gear:
+      automatic: false
+      cooldown: 1000
+      down:
+        index: 12
+      up:
+        index: 11
+    num_inputs:
+      indexes: [5, 9, 14]
+    services:
+      kill:
+        index: 1
+        name: '/kill'
+      reset:
+        index: 2
+        name: '/reset'
+    use_sim_time: false
+    wait_servers: false
