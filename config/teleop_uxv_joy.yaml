@@ -16,6 +16,7 @@
       arm:
         index: 0
         name: '/arm'
+      cooldown: 1000
       disarm:
         index: 3
         name: '/disarm'
@@ -59,6 +60,7 @@
     num_inputs:
       indexes: [5, 9, 14]
     services:
+      cooldown: 1000
       kill:
         index: 1
         name: '/kill'

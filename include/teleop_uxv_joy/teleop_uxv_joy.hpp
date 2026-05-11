@@ -173,14 +173,17 @@ private:
   std::atomic<bool> operation_in_progress_{false};
 
   /* Internal state variables. */
-  std::atomic<bool>       armed_        = false;
-  int16_t                 gear_         = UXVGear::GEAR_N;
-  rclcpp::Clock           gear_clock_   = rclcpp::Clock(RCL_SYSTEM_TIME);
-  rclcpp::Time            gear_last_ts_ = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  rclcpp::Time            actions_last_ts_  = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  std::atomic<bool>       armed_            = false;
+  rclcpp::Clock           commands_clock_   = rclcpp::Clock(RCL_SYSTEM_TIME);
+  int16_t                 gear_             = UXVGear::GEAR_N;
+  rclcpp::Time            gear_last_ts_     = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  rclcpp::Time            services_last_ts_ = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
 
   /* Node parameters. */
   int64_t              actions_arm_index_;
   std::string          actions_arm_name_;
+  int64_t              actions_cooldown_;
   int64_t              actions_disarm_index_;
   std::string          actions_disarm_name_;
   double               axes_lh_deadzone_;
@@ -207,6 +210,7 @@ private:
   int64_t              gear_down_index_;
   int64_t              gear_up_index_;
   std::vector<int64_t> num_inputs_indexes_;
+  int64_t              services_cooldown_;
   int64_t              services_kill_index_;
   std::string          services_kill_name_;
   int64_t              services_reset_index_;

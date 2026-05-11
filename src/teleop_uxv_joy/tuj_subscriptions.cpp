@@ -37,8 +37,9 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
     op_thread_.join();
   }
 
-  // Get gear commands with cooldown
-  rclcpp::Time now_ts = gear_clock_.now();
+  rclcpp::Time now_ts = commands_clock_.now();
+
+  // Get gear commands (with cooldown)
   if (now_ts - gear_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(gear_cooldown_ * 1000000))) {
     // Get gear down
     if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
@@ -48,7 +49,7 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
       } else {
         gear_ -= 1;
       }
-      gear_last_ts_ = gear_clock_.now();
+      gear_last_ts_ = commands_clock_.now();
       RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
     }
 
@@ -60,8 +61,70 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
       } else {
         gear_ += 1;
       }
-      gear_last_ts_ = gear_clock_.now();
+      gear_last_ts_ = commands_clock_.now();
       RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+    }
+  }
+
+  // Get service commands (with cooldown)
+  if (now_ts - services_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(services_cooldown_ * 1000000))) {
+    // Check for kill service
+    if (!services_kill_name_.empty()) {
+      if (static_cast<std::size_t>(services_kill_index_) < msg->buttons.size() &&
+          msg->buttons[services_kill_index_] == BUTTON_PRESSED) {
+        operation_in_progress_.store(true, std::memory_order_release);
+        op_thread_ = std::thread(
+          std::bind(
+            &TeleopUXVJoy::handle_kill,
+            this));
+        services_last_ts_ = commands_clock_.now();
+        return;
+      }
+    }
+
+    // Check for reset service
+    if (!services_reset_name_.empty()) {
+      if (static_cast<std::size_t>(services_reset_index_) < msg->buttons.size() &&
+          msg->buttons[services_reset_index_] == BUTTON_PRESSED) {
+        operation_in_progress_.store(true, std::memory_order_release);
+        op_thread_ = std::thread(
+          std::bind(
+            &TeleopUXVJoy::handle_reset,
+            this));
+        services_last_ts_ = commands_clock_.now();
+        return;
+      }
+    }
+  }
+
+  // Get action  commands (with cooldown)
+  if (now_ts - actions_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(services_cooldown_ * 1000000))) {
+    // Check for arm action
+    if (!actions_arm_name_.empty()) {
+      if (static_cast<std::size_t>(actions_arm_index_) < msg->buttons.size() &&
+          msg->buttons[actions_arm_index_] == BUTTON_PRESSED) {
+        operation_in_progress_.store(true, std::memory_order_release);
+        op_thread_ = std::thread(
+          std::bind(
+            &TeleopUXVJoy::handle_arm,
+            this));
+        actions_last_ts_ = commands_clock_.now();
+        return;
+      }
+    }
+
+    // Check for disarm action
+    if (!actions_disarm_name_.empty()) {
+      if (static_cast<std::size_t>(actions_disarm_index_) < msg->buttons.size() &&
+          msg->buttons[actions_disarm_index_] == BUTTON_PRESSED) {
+        operation_in_progress_.store(true, std::memory_order_release);
+        op_thread_ = std::thread(
+          std::bind(
+            &TeleopUXVJoy::handle_disarm,
+            this));
+        actions_last_ts_ = commands_clock_.now();
+        return;
+      }
     }
   }
 
@@ -69,58 +132,6 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   if (enable_button_require_) {
     if (static_cast<std::size_t>(enable_button_index_) >= msg->buttons.size() ||
         msg->buttons[enable_button_index_] == BUTTON_RELEASED) {
-      return;
-    }
-  }
-
-  // Check for kill service
-  if (!services_kill_name_.empty()) {
-    if (static_cast<std::size_t>(services_kill_index_) < msg->buttons.size() &&
-        msg->buttons[services_kill_index_] == BUTTON_PRESSED) {
-      operation_in_progress_.store(true, std::memory_order_release);
-      op_thread_ = std::thread(
-        std::bind(
-          &TeleopUXVJoy::handle_kill,
-          this));
-      return;
-    }
-  }
-
-  // Check for reset service
-  if (!services_reset_name_.empty()) {
-    if (static_cast<std::size_t>(services_reset_index_) < msg->buttons.size() &&
-        msg->buttons[services_reset_index_] == BUTTON_PRESSED) {
-      operation_in_progress_.store(true, std::memory_order_release);
-      op_thread_ = std::thread(
-        std::bind(
-          &TeleopUXVJoy::handle_reset,
-          this));
-      return;
-    }
-  }
-
-  // Check for arm action
-  if (!actions_arm_name_.empty()) {
-    if (static_cast<std::size_t>(actions_arm_index_) < msg->buttons.size() &&
-        msg->buttons[actions_arm_index_] == BUTTON_PRESSED) {
-      operation_in_progress_.store(true, std::memory_order_release);
-      op_thread_ = std::thread(
-        std::bind(
-          &TeleopUXVJoy::handle_arm,
-          this));
-      return;
-    }
-  }
-
-  // Check for disarm action
-  if (!actions_disarm_name_.empty()) {
-    if (static_cast<std::size_t>(actions_disarm_index_) < msg->buttons.size() &&
-        msg->buttons[actions_disarm_index_] == BUTTON_PRESSED) {
-      operation_in_progress_.store(true, std::memory_order_release);
-      op_thread_ = std::thread(
-        std::bind(
-          &TeleopUXVJoy::handle_disarm,
-          this));
       return;
     }
   }

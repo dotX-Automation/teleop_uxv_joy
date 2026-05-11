@@ -22,6 +22,17 @@ params:
     read_only: true
     var_name: actions_arm_name_
 
+  actions.cooldown:
+    type: integer
+    default_value: 1000
+    min_value: 1
+    max_value: 10000
+    step: 1
+    description: "Cooldown time for action commands (debouncing) [ms]"
+    constraints: ""
+    read_only: false
+    var_name: actions_cooldown_
+
   actions.disarm.index:
     type: integer
     default_value: 0
@@ -283,6 +294,17 @@ params:
     constraints: "Must be an array of valid array indexes ordered as the desired num_inputs; set an entry out of bounds to skip the corresponding channel; num_inputs are treated as binaries"
     read_only: false
     var_name: num_inputs_indexes_
+
+  services.cooldown:
+    type: integer
+    default_value: 1000
+    min_value: 1
+    max_value: 10000
+    step: 1
+    description: "Cooldown time for service commands (debouncing) [ms]"
+    constraints: ""
+    read_only: false
+    var_name: services_cooldown_
 
   services.kill.index:
     type: integer
