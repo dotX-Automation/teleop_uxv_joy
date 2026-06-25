@@ -27,7 +27,6 @@ namespace teleop_uxv_joy
 
 void TeleopUXVJoy::handle_arm()
 {
-  armed_.store(true, std::memory_order_release); // No matter what the server will say, this also changes the internal state of this module
   RCLCPP_WARN(get_logger(), "ARM");
 
   // Try to arm the UXV
@@ -54,7 +53,6 @@ void TeleopUXVJoy::handle_arm()
 
 void TeleopUXVJoy::handle_disarm()
 {
-  armed_.store(false, std::memory_order_release); // No matter what the server will say, this also changes the internal state of this module
   RCLCPP_WARN(get_logger(), "DISARM");
 
   // Try to disarm the UXV

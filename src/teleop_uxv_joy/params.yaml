@@ -376,6 +376,25 @@ params:
     read_only: true
     var_name: services_reset_name_
 
+  uxv_command.arm:
+    type: bool
+    default_value: false
+    description: "Value to write in the 'UXVCommand.arm' message field"
+    constraints: ""
+    read_only: false
+    var_name: uxv_command_arm_
+
+  uxv_command.mode:
+    type: integer
+    default_value: 2
+    min_value: 0
+    max_value: 10
+    step: 1
+    description: "Value to write in the 'UXVCommand.op_mode.mode message field"
+    constraints: ""
+    read_only: false
+    var_name: uxv_command_mode_
+
   wait_servers:
     type: bool
     default_value: false

@@ -72,4 +72,7 @@
         index: 2
         name: '/reset'
     use_sim_time: false
+    uxv_command:
+      arm: true
+      mode: 2
     wait_servers: false

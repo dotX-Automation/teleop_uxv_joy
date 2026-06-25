@@ -177,7 +177,6 @@ private:
 
   /* Internal state variables. */
   rclcpp::Time            actions_last_ts_  = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
-  std::atomic<bool>       armed_            = false;
   rclcpp::Clock           commands_clock_   = rclcpp::Clock(RCL_SYSTEM_TIME);
   int16_t                 gear_             = UXVGear::GEAR_N;
   rclcpp::Time            gear_last_ts_     = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
@@ -222,6 +221,8 @@ private:
   bool                 services_reset_as_topic_;
   int64_t              services_reset_index_;
   std::string          services_reset_name_;
+  bool                 uxv_command_arm_;
+  int64_t              uxv_command_mode_;
   bool                 wait_servers_;
 
   /* Utilities. */
