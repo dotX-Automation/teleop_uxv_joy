@@ -77,7 +77,7 @@ def generate_launch_description():
                     }
                 ],
                 remappings=[
-                    ('joy', 'joy'),
+                    ('joy',              'joy'),
                     ('joy/set_feedback', 'joy/set_feedback')
                 ]
             ),
@@ -88,8 +88,9 @@ def generate_launch_description():
                 namespace=ns,
                 parameters=[cf],
                 remappings=[
-                    ('/joy', 'joy'),
-                    ('/cmd_uxv', '/cmd_uxv')
+                    ('/joy',     'joy'),
+                    ('/cmd_uxv', '/cmd_uxv'),
+                    ('/cmd_op',  '/cmd_op')
                 ]
             )
         ]

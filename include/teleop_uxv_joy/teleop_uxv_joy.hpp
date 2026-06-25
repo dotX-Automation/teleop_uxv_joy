@@ -48,6 +48,7 @@
 #include <dua_uxv_interfaces/msg/uxv_num_channels.hpp>
 #include <sensor_msgs/msg/joy.hpp>
 #include <std_msgs/msg/header.hpp>
+#include <std_msgs/msg/string.hpp>
 
 #include <std_srvs/srv/trigger.hpp>
 
@@ -64,6 +65,7 @@ using UXVMode              = dua_uxv_interfaces::msg::UXVMode;
 using UXVNumChannels       = dua_uxv_interfaces::msg::UXVNumChannels;
 using Joy                  = sensor_msgs::msg::Joy;
 using Header               = std_msgs::msg::Header;
+using String               = std_msgs::msg::String;
 
 using Trigger              = std_srvs::srv::Trigger;
 
@@ -135,6 +137,7 @@ private:
   void joy_sub_clbk(const Joy::ConstSharedPtr msg);
 
   /* Topic publishers. */
+  rclcpp::Publisher<String>::SharedPtr cmd_op_pub_;
   rclcpp::Publisher<UXVCommand>::SharedPtr cmd_uxv_pub_;
 
   /* Service clients. */
@@ -181,9 +184,11 @@ private:
   rclcpp::Time            services_last_ts_ = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
 
   /* Node parameters. */
+  bool                 actions_arm_as_topic_;
   int64_t              actions_arm_index_;
   std::string          actions_arm_name_;
   int64_t              actions_cooldown_;
+  bool                 actions_disarm_as_topic_;
   int64_t              actions_disarm_index_;
   std::string          actions_disarm_name_;
   double               axes_lh_deadzone_;
@@ -211,8 +216,10 @@ private:
   int64_t              gear_up_index_;
   std::vector<int64_t> num_inputs_indexes_;
   int64_t              services_cooldown_;
+  bool                 services_kill_as_topic_;
   int64_t              services_kill_index_;
   std::string          services_kill_name_;
+  bool                 services_reset_as_topic_;
   int64_t              services_reset_index_;
   std::string          services_reset_name_;
   bool                 wait_servers_;
