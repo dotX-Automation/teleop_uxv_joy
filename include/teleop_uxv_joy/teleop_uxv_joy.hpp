@@ -211,7 +211,10 @@ private:
   std::string          frame_id_;
   bool                 gear_automatic_;
   int64_t              gear_cooldown_;
+  int64_t              gear_d_index_;
   int64_t              gear_down_index_;
+  int64_t              gear_n_index_;
+  int64_t              gear_r_index_;
   int64_t              gear_up_index_;
   std::vector<int64_t> num_inputs_indexes_;
   int64_t              services_cooldown_;

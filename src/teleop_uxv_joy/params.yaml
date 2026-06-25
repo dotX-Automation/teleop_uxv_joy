@@ -278,6 +278,17 @@ params:
     read_only: false
     var_name: gear_cooldown_
 
+  gear.d.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the gear D button in the Joy.buttons array, set to -1 to disable"
+    constraints: "Must be a valid array index, valid only if gear.automatic is enabled"
+    read_only: false
+    var_name: gear_d_index_
+
   gear.down.index:
     type: integer
     default_value: -1
@@ -288,6 +299,28 @@ params:
     constraints: "Must be a valid array index"
     read_only: false
     var_name: gear_down_index_
+
+  gear.n.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the gear N button in the Joy.buttons array, set to -1 to disable"
+    constraints: "Must be a valid array index, valid only if gear.automatic is enabled"
+    read_only: false
+    var_name: gear_n_index_
+
+  gear.r.index:
+    type: integer
+    default_value: -1
+    min_value: -1
+    max_value: 255
+    step: 1
+    description: "Index of the gear R button in the Joy.buttons array, set to -1 to disable"
+    constraints: "Must be a valid array index, valid only if gear.automatic is enabled"
+    read_only: false
+    var_name: gear_r_index_
 
   gear.up.index:
     type: integer

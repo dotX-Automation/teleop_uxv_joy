@@ -41,30 +41,54 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
 
   // Get gear commands (with cooldown)
   if (now_ts - gear_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(gear_cooldown_ * 1000000))) {
-    // Get gear down
-    if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
-        msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
-      if (gear_automatic_) {
-        gear_ = std::clamp(static_cast<int16_t>(gear_ - 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
-      } else {
-        gear_ -= 1;
+    if (gear_automatic_) {
+      // Get gear N
+      if (gear_n_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_n_index_) < msg->buttons.size() &&
+          msg->buttons[gear_n_index_] == BUTTON_PRESSED) {
+        gear_ = UXVGear::GEAR_N;
+        gear_last_ts_ = commands_clock_.now();
+        RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+        goto gears_done;
       }
-      gear_last_ts_ = commands_clock_.now();
-      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
-    }
 
-    // Get gear up
-    if (gear_up_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_up_index_) < msg->buttons.size() &&
-        msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
-      if (gear_automatic_) {
-        gear_ = std::clamp(static_cast<int16_t>(gear_ + 1), UXVGear::GEAR_R, UXVGear::GEAR_D);
-      } else {
-        gear_ += 1;
+      // Get gear D
+      if (gear_d_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_d_index_) < msg->buttons.size() &&
+          msg->buttons[gear_d_index_] == BUTTON_PRESSED) {
+        gear_ = UXVGear::GEAR_D;
+        gear_last_ts_ = commands_clock_.now();
+        RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+        goto gears_done;
       }
-      gear_last_ts_ = commands_clock_.now();
-      RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+
+      // Get gear R
+      if (gear_r_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_r_index_) < msg->buttons.size() &&
+          msg->buttons[gear_r_index_] == BUTTON_PRESSED) {
+        gear_ = UXVGear::GEAR_R;
+        gear_last_ts_ = commands_clock_.now();
+        RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+        goto gears_done;
+      }
+    } else {
+      // Get gear down
+      if (gear_down_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_down_index_) < msg->buttons.size() &&
+          msg->buttons[gear_down_index_] == BUTTON_PRESSED) {
+        gear_ -= 1;
+        gear_last_ts_ = commands_clock_.now();
+        RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+        goto gears_done;
+      }
+
+      // Get gear up
+      if (gear_up_index_ != INDEX_INVALID && static_cast<std::size_t>(gear_up_index_) < msg->buttons.size() &&
+          msg->buttons[gear_up_index_] == BUTTON_PRESSED) {
+        gear_ += 1;
+        gear_last_ts_ = commands_clock_.now();
+        RCLCPP_WARN(get_logger(), "GEAR %s", get_gear_str(gear_).c_str());
+        goto gears_done;
+      }
     }
   }
+gears_done:
 
   // Get service commands (with cooldown)
   if (now_ts - services_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(services_cooldown_ * 1000000))) {
@@ -82,8 +106,8 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
             &TeleopUXVJoy::handle_kill,
             this));
         services_last_ts_ = commands_clock_.now();
-        return;
       }
+      return;
     }
 
     // Check for reset service
@@ -100,8 +124,8 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
             &TeleopUXVJoy::handle_reset,
             this));
         services_last_ts_ = commands_clock_.now();
-        return;
       }
+      return;
     }
   }
 
@@ -121,14 +145,14 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
             &TeleopUXVJoy::handle_arm,
             this));
         actions_last_ts_ = commands_clock_.now();
-        return;
       }
+      return;
     }
 
     // Check for disarm action
     if (static_cast<std::size_t>(actions_disarm_index_) < msg->buttons.size() &&
         msg->buttons[actions_disarm_index_] == BUTTON_PRESSED) {
-      if (actions_arm_as_topic_) {
+      if (actions_disarm_as_topic_) {
         String cmd_op_msg{};
         cmd_op_msg.set__data("disarm");
         cmd_op_pub_->publish(cmd_op_msg);
@@ -139,8 +163,8 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
             &TeleopUXVJoy::handle_disarm,
             this));
         actions_last_ts_ = commands_clock_.now();
-        return;
       }
+      return;
     }
   }
 

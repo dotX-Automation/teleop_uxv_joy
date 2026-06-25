@@ -4,11 +4,14 @@
 # - disarm: triangle
 # - kill: circle
 # - reset: square
+# - gear D: dpad right
+# - gear N: dpad down
+# - gear R: dpad left
 # - gear down: dpad down
 # - gear up: dpad up
 # - num_inputs[0]: PS button
 # - num_inputs[1]: L1
-# - num_inputs[2]: dpad right
+# - num_inputs[2]: options
 
 /teleop_uxv_joy:
   ros__parameters:
@@ -55,12 +58,18 @@
     gear:
       automatic: false
       cooldown: 1000
+      d:
+        index: 14
       down:
         index: 12
+      n:
+        index: 12
+      r:
+        index: 13
       up:
         index: 11
     num_inputs:
-      indexes: [5, 9, 14]
+      indexes: [5, 9, 6]
     services:
       cooldown: 1000
       kill:
