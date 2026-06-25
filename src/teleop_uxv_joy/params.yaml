@@ -90,6 +90,14 @@ params:
     read_only: false
     var_name: axes_lh_index_
 
+  axes.lh.normalize_round:
+    type: bool
+    default_value: false
+    description: "Handles a round (aggregated) stick by using combined radius instead of single reading for this axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lh_normalize_round_
+
   axes.lh.reverse:
     type: bool
     default_value: false
@@ -130,6 +138,14 @@ params:
     constraints: "Must be a valid array index, or -1 to disable"
     read_only: false
     var_name: axes_lv_index_
+
+  axes.lv.normalize_round:
+    type: bool
+    default_value: false
+    description: "Handles a round (aggregated) stick by using combined radius instead of single reading for this axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_lv_normalize_round_
 
   axes.lv.reverse:
     type: bool
@@ -172,6 +188,14 @@ params:
     read_only: false
     var_name: axes_rh_index_
 
+  axes.rh.normalize_round:
+    type: bool
+    default_value: false
+    description: "Handles a round (aggregated) stick by using combined radius instead of single reading for this axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rh_normalize_round_
+
   axes.rh.reverse:
     type: bool
     default_value: false
@@ -212,6 +236,14 @@ params:
     constraints: "Must be a valid array index, or -1 to disable"
     read_only: false
     var_name: axes_rv_index_
+
+  axes.rv.normalize_round:
+    type: bool
+    default_value: false
+    description: "Handles a round (aggregated) stick by using combined radius instead of single reading for this axis"
+    constraints: ""
+    read_only: false
+    var_name: axes_rv_normalize_round_
 
   axes.rv.reverse:
     type: bool

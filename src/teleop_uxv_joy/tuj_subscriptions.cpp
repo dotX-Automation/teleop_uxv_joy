@@ -197,6 +197,11 @@ gears_done:
   if (axes_lv_reverse_) lv *= AXIS_REVERSE;
   if (axes_rh_reverse_) rh *= AXIS_REVERSE;
   if (axes_rv_reverse_) rv *= AXIS_REVERSE;
+  const float lh0 = lh, lv0 = lv, rh0 = rh, rv0 = rv;
+  if (axes_lh_normalize_round_) lh = sgn(lh0) * std::min(std::hypot(lh0, lv0), 1.0f);
+  if (axes_lv_normalize_round_) lv = sgn(lv0) * std::min(std::hypot(lh0, lv0), 1.0f);
+  if (axes_rh_normalize_round_) rh = sgn(rh0) * std::min(std::hypot(rh0, rv0), 1.0f);
+  if (axes_rv_normalize_round_) rv = sgn(rv0) * std::min(std::hypot(rh0, rv0), 1.0f);
 
   // Get numerical inputs
   std::array<bool, UXVNumChannels::N_CHANNELS> num_inputs_valid;

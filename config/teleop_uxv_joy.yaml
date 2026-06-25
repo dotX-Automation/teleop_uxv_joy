@@ -29,21 +29,25 @@
       lh:
         deadzone: 0.1
         index: 0
+        normalize_round: false
         reverse: false
         scale: 1.0
       lv:
         deadzone: 0.1
         index: 1
+        normalize_round: false
         reverse: false
         scale: 1.0
       rh:
         deadzone: 0.1
         index: 2
+        normalize_round: false
         reverse: false
         scale: 1.0
       rv:
         deadzone: 0.1
         index: 3
+        normalize_round: false
         reverse: false
         scale: 1.0
     dua:
