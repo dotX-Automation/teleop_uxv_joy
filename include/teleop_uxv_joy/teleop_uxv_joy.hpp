@@ -58,6 +58,16 @@
 namespace teleop_uxv_joy
 {
 
+/**
+ * @brief Returns the signum of a given number.
+ *
+ * @tparam T Numerical type.
+ * @param x Number.
+ * @return -1, 0, or +1.
+ */
+template <typename T>
+constexpr int sgn(T x) { return (T(0) < x) - (x < T(0)); }
+
 using CommandResultStamped = dua_common_interfaces::msg::CommandResultStamped;
 using UXVCommand           = dua_uxv_interfaces::msg::UXVCommand;
 using UXVGear              = dua_uxv_interfaces::msg::UXVGear;
@@ -192,18 +202,22 @@ private:
   std::string          actions_disarm_name_;
   double               axes_lh_deadzone_;
   int64_t              axes_lh_index_;
+  bool                 axes_lh_normalize_round_;
   bool                 axes_lh_reverse_;
   double               axes_lh_scale_;
   double               axes_lv_deadzone_;
   int64_t              axes_lv_index_;
+  bool                 axes_lv_normalize_round_;
   bool                 axes_lv_reverse_;
   double               axes_lv_scale_;
   double               axes_rh_deadzone_;
   int64_t              axes_rh_index_;
+  bool                 axes_rh_normalize_round_;
   bool                 axes_rh_reverse_;
   double               axes_rh_scale_;
   double               axes_rv_deadzone_;
   int64_t              axes_rv_index_;
+  bool                 axes_rv_normalize_round_;
   bool                 axes_rv_reverse_;
   double               axes_rv_scale_;
   int64_t              enable_button_index_;
