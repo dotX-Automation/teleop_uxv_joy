@@ -69,9 +69,13 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   // Get service commands (with cooldown)
   if (now_ts - services_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(services_cooldown_ * 1000000))) {
     // Check for kill service
-    if (!services_kill_name_.empty()) {
-      if (static_cast<std::size_t>(services_kill_index_) < msg->buttons.size() &&
-          msg->buttons[services_kill_index_] == BUTTON_PRESSED) {
+    if (static_cast<std::size_t>(services_kill_index_) < msg->buttons.size() &&
+        msg->buttons[services_kill_index_] == BUTTON_PRESSED) {
+      if (services_kill_as_topic_) {
+        String cmd_op_msg{};
+        cmd_op_msg.set__data("kill");
+        cmd_op_pub_->publish(cmd_op_msg);
+      } else if (!services_kill_name_.empty()) {
         operation_in_progress_.store(true, std::memory_order_release);
         op_thread_ = std::thread(
           std::bind(
@@ -83,9 +87,13 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
     }
 
     // Check for reset service
-    if (!services_reset_name_.empty()) {
-      if (static_cast<std::size_t>(services_reset_index_) < msg->buttons.size() &&
-          msg->buttons[services_reset_index_] == BUTTON_PRESSED) {
+    if (static_cast<std::size_t>(services_reset_index_) < msg->buttons.size() &&
+        msg->buttons[services_reset_index_] == BUTTON_PRESSED) {
+      if (services_reset_as_topic_) {
+        String cmd_op_msg{};
+        cmd_op_msg.set__data("reset");
+        cmd_op_pub_->publish(cmd_op_msg);
+      } else if (!services_reset_name_.empty()) {
         operation_in_progress_.store(true, std::memory_order_release);
         op_thread_ = std::thread(
           std::bind(
@@ -100,9 +108,13 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   // Get action  commands (with cooldown)
   if (now_ts - actions_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(services_cooldown_ * 1000000))) {
     // Check for arm action
-    if (!actions_arm_name_.empty()) {
-      if (static_cast<std::size_t>(actions_arm_index_) < msg->buttons.size() &&
-          msg->buttons[actions_arm_index_] == BUTTON_PRESSED) {
+    if (static_cast<std::size_t>(actions_arm_index_) < msg->buttons.size() &&
+        msg->buttons[actions_arm_index_] == BUTTON_PRESSED) {
+      if (actions_arm_as_topic_) {
+        String cmd_op_msg{};
+        cmd_op_msg.set__data("arm");
+        cmd_op_pub_->publish(cmd_op_msg);
+      } else if (!actions_arm_name_.empty()) {
         operation_in_progress_.store(true, std::memory_order_release);
         op_thread_ = std::thread(
           std::bind(
@@ -114,9 +126,13 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
     }
 
     // Check for disarm action
-    if (!actions_disarm_name_.empty()) {
-      if (static_cast<std::size_t>(actions_disarm_index_) < msg->buttons.size() &&
-          msg->buttons[actions_disarm_index_] == BUTTON_PRESSED) {
+    if (static_cast<std::size_t>(actions_disarm_index_) < msg->buttons.size() &&
+        msg->buttons[actions_disarm_index_] == BUTTON_PRESSED) {
+      if (actions_arm_as_topic_) {
+        String cmd_op_msg{};
+        cmd_op_msg.set__data("disarm");
+        cmd_op_pub_->publish(cmd_op_msg);
+      } else if (!actions_disarm_name_.empty()) {
         operation_in_progress_.store(true, std::memory_order_release);
         op_thread_ = std::thread(
           std::bind(

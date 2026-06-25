@@ -3,6 +3,14 @@ namespace: teleop_uxv_joy
 node_class_name: TeleopUXVJoy
 
 params:
+  actions.arm.as_topic:
+    type: bool
+    default_value: false
+    description: "If enabled, 'arm' is published on /cmd_op (std_msgs/String) instead of calling a server"
+    constraints: "If enabled, overrides actions.arm.name"
+    read_only: true
+    var_name: actions_arm_as_topic_
+
   actions.arm.index:
     type: integer
     default_value: 0
@@ -32,6 +40,14 @@ params:
     constraints: ""
     read_only: false
     var_name: actions_cooldown_
+
+  actions.disarm.as_topic:
+    type: bool
+    default_value: false
+    description: "If enabled, 'disarm' is published on /cmd_op (std_msgs/String) instead of calling a server"
+    constraints: "If enabled, overrides actions.disarm.name"
+    read_only: true
+    var_name: actions_disarm_as_topic_
 
   actions.disarm.index:
     type: integer
@@ -306,6 +322,14 @@ params:
     read_only: false
     var_name: services_cooldown_
 
+  services.kill.as_topic:
+    type: bool
+    default_value: false
+    description: "If enabled, 'kill' is published on /cmd_op (std_msgs/String) instead of calling a server"
+    constraints: "If enabled, overrides services.kill.name"
+    read_only: true
+    var_name: services_kill_as_topic_
+
   services.kill.index:
     type: integer
     default_value: 0
@@ -324,6 +348,14 @@ params:
     constraints: ""
     read_only: true
     var_name: services_kill_name_
+
+  services.reset.as_topic:
+    type: bool
+    default_value: false
+    description: "If enabled, 'reset' is published on /cmd_op (std_msgs/String) instead of calling a server"
+    constraints: "If enabled, overrides services.reset.name"
+    read_only: true
+    var_name: services_reset_as_topic_
 
   services.reset.index:
     type: integer

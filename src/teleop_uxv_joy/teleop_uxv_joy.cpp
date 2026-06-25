@@ -61,6 +61,14 @@ void TeleopUXVJoy::init_subscribers()
 
 void TeleopUXVJoy::init_publishers()
 {
+  // cmd_op
+  if (actions_arm_as_topic_   || actions_disarm_as_topic_ ||
+      services_kill_as_topic_ || services_reset_as_topic_) {
+    cmd_op_pub_ = dua_create_publisher<String>(
+      "/cmd_op",
+      dua_qos::Reliable::get_datum_qos());
+  }
+
   // cmd_uxv
   cmd_uxv_pub_ = dua_create_publisher<UXVCommand>(
     "/cmd_uxv",
@@ -70,12 +78,12 @@ void TeleopUXVJoy::init_publishers()
 void TeleopUXVJoy::init_service_clients()
 {
   // kill
-  if (!services_kill_name_.empty()) {
+  if (!services_kill_as_topic_ && !services_kill_name_.empty()) {
     kill_client_ = dua_create_service_client<Trigger>(services_kill_name_, wait_servers_);
   }
 
   // reset
-  if (!services_reset_name_.empty()) {
+  if (!services_reset_as_topic_ && !services_reset_name_.empty()) {
     reset_client_ = dua_create_service_client<Trigger>(services_reset_name_, wait_servers_);
   }
 }
@@ -83,12 +91,12 @@ void TeleopUXVJoy::init_service_clients()
 void TeleopUXVJoy::init_action_clients()
 {
   // arm
-  if (!actions_arm_name_.empty()) {
+  if (!actions_arm_as_topic_ && !actions_arm_name_.empty()) {
     arm_client_ = dua_create_action_client<Arm>(actions_arm_name_, nullptr, wait_servers_);
   }
 
   // disarm
-  if (!actions_disarm_name_.empty()) {
+  if (!actions_disarm_as_topic_ && !actions_disarm_name_.empty()) {
     disarm_client_ = dua_create_action_client<Disarm>(actions_disarm_name_, nullptr, wait_servers_);
   }
 }
