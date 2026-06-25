@@ -200,8 +200,8 @@ void TeleopUXVJoy::joy_sub_clbk(const Joy::ConstSharedPtr msg)
   cmd_uxv_msg.act_gear.set__gear(gear_);
   cmd_uxv_msg.num_inputs.set__channels(num_inputs);
   cmd_uxv_msg.num_inputs.set__valid(num_inputs_valid);
-  cmd_uxv_msg.op_mode.set__mode(UXVMode::UXV_MODE_OFFBOARD);
-  cmd_uxv_msg.set__arm(armed_.load(std::memory_order_acquire));
+  cmd_uxv_msg.op_mode.set__mode(static_cast<int16_t>(uxv_command_mode_));
+  cmd_uxv_msg.set__arm(uxv_command_arm_);
   cmd_uxv_msg.set__reset(false);
   cmd_uxv_pub_->publish(cmd_uxv_msg);
 }
