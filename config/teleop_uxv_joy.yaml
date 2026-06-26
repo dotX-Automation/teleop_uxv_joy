@@ -26,6 +26,19 @@
         index: 3
         name: '/disarm'
     axes:
+      # 1EUR (One-Euro) adaptive low-pass smoothing, applied to all axes.
+      # Tuning: raise 'beta' if there is too much lag during deliberate moves;
+      # lower 'min_cutoff' if too much jitter remains while the stick is held still.
+      # 'output_deadband' flattens residual float (raise to flatten more, at the cost of
+      # resolution); 'settle_threshold' snaps the decay tail to exactly 0 near neutral
+      # (raise for a crisper stop, lower e.g. to 1e-6 to only kill the denormal tail).
+      filter:
+        beta: 0.07
+        dcutoff: 1.0
+        enable: true
+        min_cutoff: 0.6
+        output_deadband: 0.01
+        settle_threshold: 0.001
       lh:
         deadzone: 0.1
         index: 0

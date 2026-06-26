@@ -203,6 +203,16 @@ gears_done:
   if (axes_rh_normalize_round_) rh = sgn(rh0) * std::min(std::hypot(rh0, rv0), 1.0f);
   if (axes_rv_normalize_round_) rv = sgn(rv0) * std::min(std::hypot(rh0, rv0), 1.0f);
 
+  // Smooth the axes with a 1€ (One-Euro) adaptive low-pass filter to remove twitching
+  if (axes_filter_enable_) {
+    const float dt = static_cast<float>((now_ts - axes_filter_last_ts_).seconds());
+    lh = filter_axis(lh, dt, axes_filter_state_[0]);
+    lv = filter_axis(lv, dt, axes_filter_state_[1]);
+    rh = filter_axis(rh, dt, axes_filter_state_[2]);
+    rv = filter_axis(rv, dt, axes_filter_state_[3]);
+    axes_filter_last_ts_ = now_ts;
+  }
+
   // Get numerical inputs
   std::array<bool, UXVNumChannels::N_CHANNELS> num_inputs_valid;
   std::array<int16_t, UXVNumChannels::N_CHANNELS> num_inputs;
