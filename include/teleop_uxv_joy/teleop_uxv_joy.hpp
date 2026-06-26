@@ -185,12 +185,24 @@ private:
   /* Synchronization primitives. */
   std::atomic<bool> operation_in_progress_{false};
 
+  /* Per-axis 1EUR (One-Euro) filter state. */
+  struct OneEuroState
+  {
+    float x_prev      = 0.0f;  // Previous raw input
+    float x_hat       = 0.0f;  // Previous filtered value
+    float dx_hat      = 0.0f;  // Previous filtered derivative
+    float last_out    = 0.0f;  // Last emitted output (send-on-delta deadband)
+    bool  initialized = false; // Whether the state has seen its first sample
+  };
+
   /* Internal state variables. */
-  rclcpp::Time            actions_last_ts_  = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
-  rclcpp::Clock           commands_clock_   = rclcpp::Clock(RCL_SYSTEM_TIME);
-  int16_t                 gear_             = UXVGear::GEAR_N;
-  rclcpp::Time            gear_last_ts_     = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
-  rclcpp::Time            services_last_ts_ = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  rclcpp::Time                actions_last_ts_     = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  rclcpp::Clock               commands_clock_      = rclcpp::Clock(RCL_SYSTEM_TIME);
+  int16_t                     gear_                = UXVGear::GEAR_N;
+  rclcpp::Time                gear_last_ts_        = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  rclcpp::Time                services_last_ts_    = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  rclcpp::Time                axes_filter_last_ts_ = rclcpp::Time(0, 0, RCL_SYSTEM_TIME);
+  std::array<OneEuroState, 4> axes_filter_state_{}; // Indices: lh=0, lv=1, rh=2, rv=3
 
   /* Node parameters. */
   bool                 actions_arm_as_topic_;
@@ -200,6 +212,12 @@ private:
   bool                 actions_disarm_as_topic_;
   int64_t              actions_disarm_index_;
   std::string          actions_disarm_name_;
+  double               axes_filter_beta_;
+  double               axes_filter_dcutoff_;
+  bool                 axes_filter_enable_;
+  double               axes_filter_min_cutoff_;
+  double               axes_filter_output_deadband_;
+  double               axes_filter_settle_threshold_;
   double               axes_lh_deadzone_;
   int64_t              axes_lh_index_;
   bool                 axes_lh_normalize_round_;
@@ -250,6 +268,16 @@ private:
    * @return Gear string representation.
    */
   std::string get_gear_str(const int16_t & gear);
+
+  /**
+   * @brief Applies a 1EUR (One-Euro) adaptive low-pass filter to a single axis value.
+   *
+   * @param value Latest (post-pipeline) axis value to filter.
+   * @param dt Elapsed time since the previous filtered sample [s].
+   * @param state Per-axis filter state, updated in place.
+   * @return Filtered axis value.
+   */
+  float filter_axis(float value, float dt, OneEuroState & state);
 
   static constexpr float   AXIS_NEUTRAL    = 0.0f;
   static constexpr float   AXIS_REVERSE    = -1.0f;
