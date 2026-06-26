@@ -130,7 +130,7 @@ gears_done:
   }
 
   // Get action  commands (with cooldown)
-  if (now_ts - actions_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(services_cooldown_ * 1000000))) {
+  if (now_ts - actions_last_ts_ > rclcpp::Duration(std::chrono::nanoseconds(actions_cooldown_ * 1000000))) {
     // Check for arm action
     if (static_cast<std::size_t>(actions_arm_index_) < msg->buttons.size() &&
         msg->buttons[actions_arm_index_] == BUTTON_PRESSED) {
