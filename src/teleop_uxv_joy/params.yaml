@@ -518,7 +518,7 @@ params:
     min_value: 0
     max_value: 10
     step: 1
-    description: "Value to write in the 'UXVCommand.op_mode.mode message field"
+    description: "Value to write in the 'UXVCommand.op_mode.mode' message field"
     constraints: ""
     read_only: false
     var_name: uxv_command_mode_
