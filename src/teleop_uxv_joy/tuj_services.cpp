@@ -33,7 +33,7 @@ void TeleopUXVJoy::handle_kill()
   Trigger::Request::SharedPtr kill_req = std::make_shared<Trigger::Request>();
   Trigger::Response::SharedPtr kill_res = kill_client_->call_sync(kill_req, false);
   if (kill_res == nullptr) {
-    RCLCPP_ERROR(get_logger(), "Kill response not received by server");
+    RCLCPP_ERROR(get_logger(), "Kill response not received from server");
   } else {
     if (!(kill_res->success)) {
       RCLCPP_ERROR(get_logger(), "Kill failure: %s", kill_res->message.c_str());
@@ -53,7 +53,7 @@ void TeleopUXVJoy::handle_reset()
   Trigger::Request::SharedPtr reset_req = std::make_shared<Trigger::Request>();
   Trigger::Response::SharedPtr reset_res = reset_client_->call_sync(reset_req, false);
   if (reset_res == nullptr) {
-    RCLCPP_ERROR(get_logger(), "Reset response not received by server");
+    RCLCPP_ERROR(get_logger(), "Reset response not received from server");
   } else {
     if (!(reset_res->success)) {
       RCLCPP_ERROR(get_logger(), "Reset failure: %s", reset_res->message.c_str());
