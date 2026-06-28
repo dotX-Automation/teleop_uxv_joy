@@ -27,7 +27,7 @@ namespace teleop_uxv_joy
 
 void TeleopUXVJoy::handle_kill()
 {
-  RCLCPP_WARN(get_logger(), "KILL");
+  RCLCPP_WARN(get_logger(), "Requesting Kill operation");
 
   // Try to kill-switch the UXV
   Trigger::Request::SharedPtr kill_req = std::make_shared<Trigger::Request>();
@@ -47,7 +47,7 @@ void TeleopUXVJoy::handle_kill()
 
 void TeleopUXVJoy::handle_reset()
 {
-  RCLCPP_WARN(get_logger(), "RESET");
+  RCLCPP_WARN(get_logger(), "Requesting Reset operation");
 
   // Try to reset the UXV
   Trigger::Request::SharedPtr reset_req = std::make_shared<Trigger::Request>();

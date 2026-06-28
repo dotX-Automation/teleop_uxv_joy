@@ -27,7 +27,7 @@ namespace teleop_uxv_joy
 
 void TeleopUXVJoy::handle_arm()
 {
-  RCLCPP_WARN(get_logger(), "ARM");
+  RCLCPP_WARN(get_logger(), "Requesting Arm operation");
 
   // Try to arm the UXV
   Arm::Goal arm_goal{};
@@ -53,7 +53,7 @@ void TeleopUXVJoy::handle_arm()
 
 void TeleopUXVJoy::handle_disarm()
 {
-  RCLCPP_WARN(get_logger(), "DISARM");
+  RCLCPP_WARN(get_logger(), "Requesting Disarm operation");
 
   // Try to disarm the UXV
   Disarm::Goal disarm_goal{};
